@@ -24,7 +24,3 @@ sumFloats([_|T], Acc) -> sumFloats(T, Acc).
 
 duplicateElements([]) -> [];
 duplicateElements([H|T]) -> [H,H|duplicateElements(T)].
-
-
-
-
