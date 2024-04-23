@@ -14,10 +14,10 @@
 
 
 generateList(N) ->
-  [{rand:uniform(360) - 180, rand:uniform(180) - 90} || _ <- lists:seq(1, N)].
+  [{rand:uniform(360), rand:uniform(180)} || _ <- lists:seq(1, N)].
 
 calculateDistance({sx, sy}, {px, py}) ->
-  math:sqrt(math:pow(sx - px, 2) + math:pow(sy - py, 2)).
+  math:sqrt((sx - px) * (sx - px) + (sy - py) * (sy - py)).
 
 find_for_person(PersonLocation, SensorsLocations) ->
   Dists = [{calculateDistance(SensorLocation, PersonLocation), SensorLocation} || SensorLocation <- SensorsLocations],
