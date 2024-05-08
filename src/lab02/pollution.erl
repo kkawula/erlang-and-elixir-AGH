@@ -38,7 +38,8 @@ add_station(StationName, Location, Monitor) ->
 add_value(StationIdentifier, Time, Pollutant, Value, Monitor) ->
   FindStation = fun(Key, _, Acc) ->
     case Key of
-      {Name, Loc} when Name == StationIdentifier; Loc == StationIdentifier -> [Key | Acc];
+      {Name, _} when Name == StationIdentifier -> [Key | Acc];
+      {_, Loc} when Loc == StationIdentifier -> [Key | Acc];
       _ -> Acc
     end
   end,
@@ -69,7 +70,8 @@ add_value(StationIdentifier, Time, Pollutant, Value, Monitor) ->
 remove_value(StationIdentifier, Time, Pollutant, Monitor) ->
   FindStation = fun(Key, _, Acc) ->
     case Key of
-      {Name, Loc} when Name == StationIdentifier; Loc == StationIdentifier -> [Key | Acc];
+      {Name, _} when Name == StationIdentifier -> [Key | Acc];
+      {_, Loc} when Loc == StationIdentifier -> [Key | Acc];
       _ -> Acc
     end
   end,
@@ -102,7 +104,8 @@ remove_value(StationIdentifier, Time, Pollutant, Monitor) ->
 get_one_value(StationIdentifier, Time, Pollutant, Monitor) ->
   FindStation = fun(Key, _, Acc) ->
     case Key of
-      {Name, Loc} when Name == StationIdentifier; Loc == StationIdentifier -> [Key | Acc];
+      {Name, _} when Name == StationIdentifier -> [Key | Acc];
+      {_, Loc} when Loc == StationIdentifier -> [Key | Acc];
       _ -> Acc
     end
   end,
@@ -131,7 +134,8 @@ get_one_value(StationIdentifier, Time, Pollutant, Monitor) ->
 get_station_mean(StationIdentifier, Pollutant, Monitor) ->
   FindStation = fun(Key, _, Acc) ->
     case Key of
-      {Name, Loc} when Name == StationIdentifier; Loc == StationIdentifier -> [Key | Acc];
+      {Name, _} when Name == StationIdentifier -> [Key | Acc];
+      {_, Loc} when Loc == StationIdentifier -> [Key | Acc];
       _ -> Acc
     end
   end,
@@ -155,6 +159,7 @@ get_station_mean(StationIdentifier, Pollutant, Monitor) ->
           {error, "Station does not exist"}
       end;
     _ ->
+      io:format("Matching stations: ~p~n", [MatchingStations]),
       {error, "Station does not exist or multiple matches found"}
   end.
 
