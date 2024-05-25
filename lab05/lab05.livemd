@@ -1,0 +1,102 @@
+# lab5
+
+## Section
+
+```elixir
+dataList =
+  File.read!("AirlyData-ALL-50k.csv")
+  |> String.split("\n")
+  |> Enum.filter(&(String.length(&1) > 0))
+```
+
+```elixir
+defmodule ParserLoader do
+  def parse_line(line) do
+    [dateTime, pollutionType, pollutionLevel, stationId, stationName, location_str] =
+      line |> String.split(";")
+
+    [date, time] = dateTime |> String.slice(0, 19) |> String.split("T")
+
+    date =
+      String.split(date, "-")
+      |> Enum.map(&String.to_integer/1)
+      |> List.to_tuple()
+
+    time =
+      String.split(time, ":")
+      |> Enum.map(&String.to_integer/1)
+      |> List.to_tuple()
+
+    %{
+      :location =>
+        location_str
+        |> String.split(",")
+        |> Enum.map(&String.to_float/1)
+        |> List.to_tuple(),
+      :stationId =>
+        stationId
+        |> String.to_integer(),
+      :dateTime => {date, time},
+      :pollutionType => pollutionType,
+      :pollutionLevel =>
+        pollutionLevel
+        |> String.to_float(),
+      :stationName => stationName
+    }
+  end
+end
+```
+
+```elixir
+dataList |> hd |> ParserLoader.parse_line()
+```
+
+```elixir
+dataList
+|> Enum.filter(&(String.length(&1) > 0))
+|> Enum.map(&ParserLoader.parse_line/1)
+|> Enum.uniq_by(& &1.location)
+|> length
+```
+
+```elixir
+defmodule StationsManger do
+  def identifyStations(dataList) do
+    dataList
+    |> Enum.filter(&(String.length(&1) > 0))
+    |> Enum.map(&ParserLoader.parse_line/1)
+    |> Enum.uniq_by(& &1.location)
+    |> Enum.map(&[&1.location, &1.stationId, &1.stationName])
+  end
+
+  def numberOfStations(dataList) do
+    dataList
+    |> Enum.filter(&(String.length(&1) > 0))
+    |> Enum.map(&ParserLoader.parse_line/1)
+    |> Enum.uniq_by(& &1.location)
+    |> length
+  end
+end
+```
+
+```elixir
+StationsManger.numberOfStations(dataList)
+```
+
+```elixir
+StationsManger.identifyStations(dataList)
+```
+
+```elixir
+Code.append_path(
+  "/Users/Kamil/Documents/Studia/Semestr_4/erelix/borowka/_build/default/lib/borowka/ebin"
+)
+```
+
+```elixir
+Application.start(:borowka)
+```
+
+```elixir
+
+```
